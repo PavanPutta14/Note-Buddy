@@ -5,8 +5,9 @@ const TaskSchema = new mongoose.Schema({
   desc: { type: String, required: true },
   completed: { type: Boolean, default: false },
   pinned: { type: Boolean, default: false },
-  dateTime: { type: Date, default: null },
-  email: { type: String, default: "" } 
+  date: { type: String, default: "" },    // If you're storing date as string
+  time: { type: String, default: "" },    // If you're storing time as string
+  email: { type: String, default: "" }    // Email of user who owns the task
 });
 
 const TaskModel = mongoose.model('Task', TaskSchema);

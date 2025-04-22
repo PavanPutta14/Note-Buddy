@@ -1,5 +1,5 @@
 .signup-bg {
-    background-image: url('./background images/signup note.png');
+  background-image: url('/background-images/signup-note.png');
     background-size: cover;
     background-position: center;
     min-height: 100vh;
