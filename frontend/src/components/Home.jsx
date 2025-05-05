@@ -31,7 +31,7 @@ const Home = () => {
 
   const fetchTasks = () => {
     axios
-      .get("http://localhost:5000/tasks")
+      .get("https://note-buddy-p1eb.onrender.com/tasks")
       .then((res) => setTasks(res.data))
       .catch((err) => console.error("Error fetching tasks:", err));
   };
@@ -53,7 +53,7 @@ const Home = () => {
 
     if (editId) {
       axios
-        .put(`http://localhost:5000/tasks/${editId}`, {
+        .put(`https://note-buddy-p1eb.onrender.com/tasks/${editId}`, {
           title,
           desc,
           dateTime,
@@ -63,7 +63,7 @@ const Home = () => {
           resetFields();
         });
     } else {
-      axios.post("http://localhost:5000/tasks", newTask).then(() => {
+      axios.post("https://note-buddy-p1eb.onrender.com/tasks", newTask).then(() => {
         fetchTasks();
         resetFields();
       });
@@ -90,7 +90,7 @@ const Home = () => {
   };
 
   const confirmDelete = () => {
-    axios.delete(`http://localhost:5000/tasks/${deleteId}`).then(() => {
+    axios.delete(`https://note-buddy-p1eb.onrender.com/tasks/${deleteId}`).then(() => {
       fetchTasks();
       setShowDeleteConfirm(false);
       setDeleteId(null);
@@ -99,12 +99,12 @@ const Home = () => {
 
   const toggleCheckbox = (task) => {
     const updated = { ...task, completed: !task.completed };
-    axios.put(`http://localhost:5000/tasks/${task._id}`, updated).then(fetchTasks);
+    axios.put(`https://note-buddy-p1eb.onrender.com/tasks/${task._id}`, updated).then(fetchTasks);
   };
 
   const togglePin = (task) => {
     const updated = { ...task, pinned: !task.pinned };
-    axios.put(`http://localhost:5000/tasks/${task._id}`, updated).then(fetchTasks);
+    axios.put(`https://note-buddy-p1eb.onrender.com/tasks/${task._id}`, updated).then(fetchTasks);
   };
 
   const filteredTasks = tasks

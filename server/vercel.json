@@ -9,8 +9,7 @@
         }
       }
     ],
-    "routes": [
-      {
+    "routes": [      {
         "src": "/(.*)",
         "dest": "server/api/index.js"
       }

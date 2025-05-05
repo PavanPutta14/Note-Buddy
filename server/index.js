@@ -1,19 +1,25 @@
+
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
 require('dotenv').config({ path: __dirname + '/.env' });
- // Load environment variables
 
 const EmployeeModel = require('./models/Employee');
 const TaskModel = require('./models/Task');
 
 const app = express();
 app.use(express.json());
-app.use(cors());
+
+// ✅ CORS fix: allow Vercel frontend
+app.use(cors({
+  origin: 'https://note-buddy-ten.vercel.app',
+  credentials: true
+}));
+
 mongoose.set('debug', true);
 
-// Connect to MongoDB Atlas
+// MongoDB Atlas connection
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('✅ Connected to MongoDB Atlas'))
   .catch(err => {
@@ -21,32 +27,29 @@ mongoose.connect(process.env.MONGODB_URI)
     process.exit(1);
   });
 
+// Register API
+app.post('/register', async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+    if (!name || !email || !password)
+      return res.status(400).json({ message: 'All fields required' });
 
-  app.post('/register', async (req, res) => {
-    try {
-      const { name, email, password } = req.body;
-      if (!name || !email || !password)
-        return res.status(400).json({ message: 'All fields required' });
-  
-      const userExists = await EmployeeModel.findOne({ email });
-      if (userExists)
-        return res.status(409).json({ message: 'User already exists' });
-  
-      const newUser = new EmployeeModel({ name, email, password });
-      await newUser.save();
-  
-      console.log("✅ User saved:", newUser); // Debug log
-  
-      res.status(201).json({ message: 'Registered', user: { name, email } });
-    } catch (error) {
-      console.error("❌ Error during registration:", error);
-      res.status(500).json({ message: 'Server error during registration' });
-    }
-  });
-  
+    const userExists = await EmployeeModel.findOne({ email });
+    if (userExists)
+      return res.status(409).json({ message: 'User already exists' });
 
+    const newUser = new EmployeeModel({ name, email, password });
+    await newUser.save();
 
-// Employee Login
+    console.log("✅ User saved:", newUser);
+    res.status(201).json({ message: 'Registered', user: { name, email } });
+  } catch (error) {
+    console.error("❌ Error during registration:", error);
+    res.status(500).json({ message: 'Server error during registration' });
+  }
+});
+
+// Login API
 app.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -109,7 +112,7 @@ app.put('/tasks/:id', async (req, res) => {
   }
 });
 
-// Toggle task pin
+// Toggle pin
 app.put('/tasks/togglePin/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -135,6 +138,11 @@ app.delete('/tasks/:id', async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: 'Error deleting task' });
   }
+});
+
+// Test route
+app.get('/', (req, res) => {
+  res.send('Hello! Home server is working.');
 });
 
 // Start server
